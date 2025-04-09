@@ -36,6 +36,11 @@ $(document).ready(function(){
     const noButton = document.getElementById('no-button');
     const responseContainer = document.getElementById('response-container');
 
+    // Variable para contar los toques en táctil
+    let noButtonTaps = 0;
+    // Detectar si es un dispositivo táctil
+    const isTouchDevice = (('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0));
+
     // Evento para el botón "Sí"
     yesButton.addEventListener('click', () => {
         responseContainer.innerHTML = '<p style="font-family: Quicksand, sans-serif; color: #2c3e50; font-size: 20px; font-weight: bold;">¡Genial! ¡Ya verás qué divertido es esto! 😄❤️</p>';
@@ -44,41 +49,53 @@ $(document).ready(function(){
         createConfetti(); 
     });
 
-    // Evento para el botón "No" (escapista)
-    noButton.addEventListener('mouseover', () => {
-        const messageRect = document.querySelector('.message').getBoundingClientRect();
-        // Obtenemos el contenedor del botón (.buttons) para referencia
-        const buttonContainerRect = noButton.parentElement.getBoundingClientRect(); 
+    if (isTouchDevice) {
+        // ---- LÓGICA TÁCTIL para el botón "No" ----
+        noButton.addEventListener('click', () => {
+            noButtonTaps++;
+            // Aplicar animación de temblor
+            noButton.classList.add('wiggle-animation');
+            // Quitar la clase después de la animación para poder repetirla
+            setTimeout(() => {
+                noButton.classList.remove('wiggle-animation');
+            }, 500); // 500ms es la duración de la animación
 
-        // Calculamos límites seguros DENTRO del contenedor del mensaje, relativo al viewport
-        const safePadding = 20; // Margen para que no se pegue a los bordes
-        const messageInnerLeft = messageRect.left + safePadding;
-        const messageInnerRight = messageRect.right - noButton.offsetWidth - safePadding;
-        // Empezar a moverlo desde más abajo para que no tape el texto inicial
-        const messageInnerTop = messageRect.top + messageRect.height * 0.5; 
-        const messageInnerBottom = messageRect.bottom - noButton.offsetHeight - safePadding;
+            if (noButtonTaps >= 5) {
+                // Después de 5 toques, ocultar el botón "No" 
+                noButton.style.display = 'none';
+                // Opcional: hacer el botón "Sí" un poco más grande
+                yesButton.style.transform = 'scale(1.1)';
+                yesButton.style.transition = 'transform 0.3s ease';
+            }
+        });
 
-        // Validar que los límites tengan sentido
-        if (messageInnerRight <= messageInnerLeft || messageInnerBottom <= messageInnerTop) {
-            // Si los límites son inválidos, mejor no moverlo
-            console.warn("Límites inválidos para mover el botón, no se moverá esta vez.");
-            return; 
-        }
+    } else {
+        // ---- LÓGICA ESCRITORIO (mouseover) para el botón "No" ----
+        noButton.addEventListener('mouseover', () => {
+            const messageRect = document.querySelector('.message').getBoundingClientRect();
+            const buttonContainerRect = noButton.parentElement.getBoundingClientRect(); 
+            const safePadding = 20; 
+            const messageInnerLeft = messageRect.left + safePadding;
+            const messageInnerRight = messageRect.right - noButton.offsetWidth - safePadding;
+            const messageInnerTop = messageRect.top + messageRect.height * 0.5; 
+            const messageInnerBottom = messageRect.bottom - noButton.offsetHeight - safePadding;
 
-        // Calcular las coordenadas absolutas (viewport) del nuevo objetivo
-        const targetX = Math.random() * (messageInnerRight - messageInnerLeft) + messageInnerLeft;
-        const targetY = Math.random() * (messageInnerBottom - messageInnerTop) + messageInnerTop;
+            if (messageInnerRight <= messageInnerLeft || messageInnerBottom <= messageInnerTop) {
+                console.warn("Límites inválidos para mover el botón, no se moverá esta vez.");
+                return; 
+            }
 
-        // Convertir las coordenadas absolutas a relativas al contenedor .buttons
-        const newLeftRelative = targetX - buttonContainerRect.left;
-        const newTopRelative = targetY - buttonContainerRect.top;
+            const targetX = Math.random() * (messageInnerRight - messageInnerLeft) + messageInnerLeft;
+            const targetY = Math.random() * (messageInnerBottom - messageInnerTop) + messageInnerTop;
+            const newLeftRelative = targetX - buttonContainerRect.left;
+            const newTopRelative = targetY - buttonContainerRect.top;
 
-        // Aplicar posición absoluta y las nuevas coordenadas relativas
-        noButton.style.position = 'absolute'; 
-        noButton.style.left = newLeftRelative + 'px';
-        noButton.style.top = newTopRelative + 'px';
-        noButton.style.transition = 'left 0.3s ease, top 0.3s ease'; 
-    });
+            noButton.style.position = 'absolute'; 
+            noButton.style.left = newLeftRelative + 'px';
+            noButton.style.top = newTopRelative + 'px';
+            noButton.style.transition = 'left 0.3s ease, top 0.3s ease'; 
+        });
+    }
 
     // Función para crear efecto confeti 
     function createConfetti() {
