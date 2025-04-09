@@ -43,7 +43,7 @@ $(document).ready(function(){
 
     // Evento para el botón "Sí"
     yesButton.addEventListener('click', () => {
-        responseContainer.innerHTML = '<p style="font-family: Quicksand, sans-serif; color: #2c3e50; font-size: 20px; font-weight: bold;">¡Genial! ¡Ya verás qué divertido es esto! 😄❤️</p>';
+        responseContainer.innerHTML = '<p style="font-family: Quicksand, sans-serif; color: #2c3e50; font-size: 20px; font-weight: bold;">¡Super! Espero te guste ❤️</p>';
         yesButton.style.display = 'none';
         noButton.style.display = 'none';
         createConfetti(); 
