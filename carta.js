@@ -1,323 +1,114 @@
-/* Contenido completo del CSS final */
-*{
-	box-sizing: border-box;
-}
+// Contenido completo del JS final
+$(document).ready(function(){
+    // Lógica para el corazón y apertura/cierre del mensaje
+    $('#messageState').change(function(){
+        if($(this).is(":checked")) {
+            $('.message').removeClass('closed').removeClass('no-anim').addClass('openNor');
+            $('.heart').removeClass('no-anim').removeClass('closeHer').removeClass('openedHer').addClass('openHer');
+            $('.instruction').fadeOut();
+            // Cambio de fondo del container (opcional)
+            // $('.container').stop().animate({"backgroundColor": "#f48fb1"}, 2000);
+        } else {
+            $('.message').removeClass('no-anim').addClass('closeNor');
+            $('.heart').removeClass('openedHer').removeClass('beating').removeClass('no-anim').addClass('closeHer');
+            $('.instruction').text('¡Espero te haya gustado! ❤️').fadeIn();
+            // Cambio de fondo del container (opcional)
+            // $('.container').stop().animate({"backgroundColor": "#fce4ec"}, 2000);
+        }
+    });
 
-h1,
-p {
-	font-family: "Quicksand";
-    font-optical-sizing: auto;
-}
+    $('.message').on('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(e) {
+        if ($(".message").hasClass("closeNor"))
+            $(".message").addClass("closed");
+        $(".message").removeClass("openNor").removeClass("closeNor").addClass("no-anim");
+    });
 
-h1 {
-	font-weight: 200;
-}
+    $('.heart').on('webkitAnimationEnd oanimationend msAnimationEnd animationend', function(e) {
+        if (!$(".heart").hasClass("closeHer"))
+            $(".heart").addClass("openedHer").addClass("beating");
+        else
+            $(".heart").addClass("no-anim").removeClass("beating");
+        $(".heart").removeClass("openHer").removeClass("closeHer");
+    });
 
-body {
-	margin: 0px;
-    background: radial-gradient(ellipse at center, #fff5f5 0%, #ffe3e3 100%);
-    height: 100vh;
-}
+    // --- Lógica para los botones ---
+    const yesButton = document.getElementById('yes-button');
+    const noButton = document.getElementById('no-button');
+    const responseContainer = document.getElementById('response-container');
 
-.instruction{
-	position: absolute;
-	font-size: 1.6rem;
-	color: #d40000;
-	top: 36%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
-}
+    // Evento para el botón "Sí"
+    yesButton.addEventListener('click', () => {
+        responseContainer.innerHTML = '<p style="font-family: Quicksand, sans-serif; color: #2c3e50; font-size: 20px; font-weight: bold;">¡Genial! ¡Ya verás qué divertido es esto! 😄❤️</p>';
+        yesButton.style.display = 'none';
+        noButton.style.display = 'none';
+        createConfetti(); 
+    });
 
-.container {
-	position: relative;
-	width: 100%;
-	height: 100vh;
-	overflow: hidden;
-}
+    // Evento para el botón "No" (escapista)
+    noButton.addEventListener('mouseover', () => {
+        const messageRect = document.querySelector('.message').getBoundingClientRect();
+        // Obtenemos el contenedor del botón (.buttons) para referencia
+        const buttonContainerRect = noButton.parentElement.getBoundingClientRect(); 
 
-.heart {
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	text-align: center;
-	transform: translate(-50%, -50%);
-	transition: transform 2s;
-	z-index: 1;
-	cursor: pointer;
-}
+        // Calculamos límites seguros DENTRO del contenedor del mensaje, relativo al viewport
+        const safePadding = 20; // Margen para que no se pegue a los bordes
+        const messageInnerLeft = messageRect.left + safePadding;
+        const messageInnerRight = messageRect.right - noButton.offsetWidth - safePadding;
+        // Empezar a moverlo desde más abajo para que no tape el texto inicial
+        const messageInnerTop = messageRect.top + messageRect.height * 0.5; 
+        const messageInnerBottom = messageRect.bottom - noButton.offsetHeight - safePadding;
 
-.heart > img {
-	width: 50px;
-	height: auto;
+        // Validar que los límites tengan sentido
+        if (messageInnerRight <= messageInnerLeft || messageInnerBottom <= messageInnerTop) {
+            // Si los límites son inválidos, mejor no moverlo
+            console.warn("Límites inválidos para mover el botón, no se moverá esta vez.");
+            return; 
+        }
 
-	animation-name: beat;
-	animation-duration: 2s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: infinite;
-	animation-play-state: running;
-}
+        // Calcular las coordenadas absolutas (viewport) del nuevo objetivo
+        const targetX = Math.random() * (messageInnerRight - messageInnerLeft) + messageInnerLeft;
+        const targetY = Math.random() * (messageInnerBottom - messageInnerTop) + messageInnerTop;
 
-.message {
-	padding: 25px;
-	background-color: #ffffff;
-	border: 2px solid #e74c3c;
-	font-family: "Quicksand", serif;
-    font-optical-sizing: auto;
-	font-size: clamp(16px, 10vw, 17px);
-	color: #333;
-	text-align: justify;
-	line-height: 1.5em;
-	width: 80%;
-	max-width: 550px;
-	height: 78%;
-	position: absolute;
-	left: 50%;
-	top: 50%;
-	transform: translate(-50%, -50%);
-	z-index: 0;
+        // Convertir las coordenadas absolutas a relativas al contenedor .buttons
+        const newLeftRelative = targetX - buttonContainerRect.left;
+        const newTopRelative = targetY - buttonContainerRect.top;
 
-	animation-name: openmsg;
-	animation-duration: 2s;
-	animation-timing-function: linear;
-	animation-play-state: paused;
-	animation-fill-mode: forwards;
-	box-shadow: 0 10px 20px rgba(212, 0, 0, 0.2), 0 6px 6px rgba(212, 0, 0, 0.25);
-	border-radius: 5px;
-	overflow: scroll;
-	scrollbar-width: none;
-}
+        // Aplicar posición absoluta y las nuevas coordenadas relativas
+        noButton.style.position = 'absolute'; 
+        noButton.style.left = newLeftRelative + 'px';
+        noButton.style.top = newTopRelative + 'px';
+        noButton.style.transition = 'left 0.3s ease, top 0.3s ease'; 
+    });
 
-.message h1 {
-	color: #c0392b;
-}
- 
-.message .sincere{
-	text-align: left;
-	font-family: "Cinzel, serif";
-	font-size: 14px;
-	line-height: 1.2em;
-	color: #555;
-}
-
-.message .sincere p{
-	margin: 0;
-    font-family: 'Quicksand', sans-serif;
-    font-size: 14px;
-}
-
-.message p {
-    font-family: 'Dancing Script', cursive;
-    font-size: clamp(18px, 4vw, 22px);
-    color: #444;
-}
-
-@keyframes beat {
-	0% { width: 50px; }
-	25% { width: 58px; }
-	30% { width: 50px; }
-	50% { width: 45px; }
-	60% { width: 50px; }
-	75% { width: 58px; }
-	100% { width: 50px; }
-}
-
-@keyframes openmsg {
-	0% { height: 0px; padding: 0px 20px; }
-	100% { height: 75%; padding: 20px 20px; }
-}
-
-@keyframes heartMove {
-	0% { top: 50% }
-	100% { top: 85%; transform: translate(-50%, 0); }
-}
-
-.openNor {
-	animation-direction: normal;
-	animation-play-state: running;
-}
-
-.closeNor {
-	animation-direction: reverse;
-	animation-play-state: running;
-}
-
-.no-anim {
-	animation: none;
-}
-
-.closed {
-	height: 0px;
-	padding: 0px 20px;
-}
-
-.bottom {
-	bottom: 5px;
-}
-
-.openHer {
-	animation-name: heartMove;
-	animation-duration: 2s;
-	animation-timing-function: linear;
-	animation-play-state: running;
-	animation-fill-mode: forwards;
-}
-
-.closeHer {
-	animation-name: heartMove;
-	animation-duration: 2s;
-	animation-timing-function: linear;
-	animation-play-state: running;
-	animation-direction: reverse;
-	animation-fill-mode: forwards;
-}
-
-.beating > img {
-	animation-name: beat;
-	animation-duration: 2s;
-	animation-timing-function: ease-in-out;
-	animation-iteration-count: infinite;
-	animation-play-state: running;
-}
-
-.openedHer {
-	top: 85%;
-	transform: translate(-50%, 0);
-}
-
-.buttons {
-    text-align: center;
-    margin-top: 20px;
-    margin-bottom: 15px;
-    position: relative;
-    min-height: 50px;
-}
-
-.buttons button {
-    padding: 10px 20px;
-    margin: 0 10px;
-    border: none;
-    border-radius: 20px;
-    font-family: 'Quicksand', sans-serif;
-    font-size: 16px;
-    cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.yes-button {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.no-button {
-    background-color: #f1f1f1;
-    color: #555;
-}
-
-.buttons button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
-}
-
-.yes-button:hover {
-     background-color: #c0392b;
-}
-
-.no-button:hover {
-     background-color: #e0e0e0;
-}
-
-@keyframes float {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(-1000px) rotate(720deg); opacity: 0; }
-}
-
-.hearts-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none; 
-  overflow: hidden;
-  z-index: -1; 
-}
-
-.heart-shape {
-  position: absolute;
-  bottom: -50px;
-  width: 20px;
-  height: 20px;
-  background-color: rgba(231, 76, 60, 0.5);
-  transform-origin: center;
-  animation: float 10s linear infinite;
-}
-
-.heart-shape::before, 
-.heart-shape::after {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  background-color: inherit;
-  border-radius: 50%;
-}
-
-.heart-shape::before {
-  top: -10px;
-  left: 0;
-}
-
-.heart-shape::after {
-  top: 0;
-  left: 10px;
-}
-
-.clouds-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: -2;
-}
-
-.cloud {
-  position: absolute;
-  width: 150px; 
-  height: 50px; 
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 50px; 
-  opacity: 0.8;
-  animation: moveClouds 25s linear infinite;
-}
-
-.cloud::before, .cloud::after {
-  content: '';
-  position: absolute;
-  background: inherit;
-  border-radius: 50%;
-  z-index: -1;
-}
-
-.cloud::before {
-  width: 60px;
-  height: 60px;
-  top: -25px;
-  left: 20px;
-}
-
-.cloud::after {
-  width: 80px;
-  height: 80px;
-  top: -40px;
-  right: 25px; 
-}
-
-@keyframes moveClouds {
-  0% { transform: translateX(-200px); }
-  100% { transform: translateX(100vw); }
-} 
+    // Función para crear efecto confeti 
+    function createConfetti() {
+        const confettiContainer = document.querySelector('body'); 
+        const colors = ['#e74c3c', '#f1c40f', '#3498db', '#2ecc71', '#ffffff', '#f39c12'];
+        for (let i = 0; i < 100; i++) {
+            const confetti = document.createElement('div');
+            confetti.style.position = 'fixed'; 
+            confetti.style.left = Math.random() * 100 + 'vw';
+            confetti.style.top = Math.random() * -50 + 'vh'; 
+            confetti.style.width = Math.random() * 10 + 5 + 'px';
+            confetti.style.height = confetti.style.width;
+            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.opacity = Math.random() * 0.8 + 0.2;
+            confetti.style.transform = 'rotate(' + Math.random() * 360 + 'deg)';
+            const fallDuration = Math.random() * 3 + 4;
+            confetti.style.animation = `fall ${fallDuration}s linear ${Math.random() * 2}s forwards`;
+            confetti.style.zIndex = '1000'; 
+            confetti.style.pointerEvents = 'none';
+            confettiContainer.appendChild(confetti);
+            confetti.addEventListener('animationend', () => {
+                 confetti.remove();
+            });
+        }
+        if (!document.getElementById('confetti-styles')) {
+            const styleSheet = document.createElement("style");
+            styleSheet.id = 'confetti-styles'; 
+            styleSheet.type = "text/css";
+            styleSheet.innerText = `@keyframes fall { 0% { transform: translateY(0vh) rotate(0deg); } 100% { transform: translateY(110vh) rotate(720deg); opacity: 0; } }`;
+            document.head.appendChild(styleSheet);
+        }
+    }
+});
