@@ -189,6 +189,8 @@ body {
     text-align: center;
     margin-top: 20px;
     margin-bottom: 15px;
+    position: relative;
+    min-height: 50px;
 }
 
 .buttons button {
