@@ -1,0 +1,358 @@
+*{
+	box-sizing: border-box;
+}
+
+h1,
+p {
+	font-family: "Quicksand";
+  font-optical-sizing: auto;
+}
+
+h1 {
+	font-weight: 200;
+}
+
+body {
+	margin: 0px;
+    background: radial-gradient(ellipse at center, #fff5f5 0%, #ffe3e3 100%);
+    height: 100vh;
+}
+
+.instruction{
+	position: absolute;
+	font-size: 1.6rem;
+	color: #d40000;
+	top: 36%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.7);
+}
+
+.container {
+	position: relative;
+	width: 100%;
+	height: 100vh;
+	overflow: hidden;
+}
+
+.heart {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	text-align: center;
+	transform: translate(-50%, -50%);
+	transition: transform 2s;
+	z-index: 1;
+	cursor: pointer;
+}
+
+.heart > img {
+	width: 50px;
+	height: auto;
+
+	animation-name: beat;
+	animation-duration: 2s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: infinite;
+	animation-play-state: running;
+}
+
+.message {
+	padding: 25px;
+	background-color: #ffffff;
+	border: 2px solid #e74c3c;
+	font-family: "Quicksand", serif;
+  font-optical-sizing: auto;
+	font-size: clamp(16px, 10vw, 17px);
+	color: #333;
+	text-align: justify;
+	line-height: 1.5em;
+	width: 80%;
+	max-width: 550px;
+	height: 78%;
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	z-index: 0;
+
+	animation-name: openmsg;
+	animation-duration: 2s;
+	animation-timing-function: linear;
+	animation-play-state: paused;
+	animation-fill-mode: forwards;
+	box-shadow: 0 10px 20px rgba(212, 0, 0, 0.2), 0 6px 6px rgba(212, 0, 0, 0.25);
+	border-radius: 5px;
+	overflow: scroll;
+	scrollbar-width: none;
+}
+
+.message h1 {
+	color: #c0392b;
+}
+ 
+.message .sincere{
+	text-align: left;
+	font-family: "Cinzel, serif";
+	font-size: 14px;
+	line-height: 1.2em;
+	color: #555;
+}
+
+.message .sincere p{
+	margin: 0;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 14px;
+}
+
+.message p {
+    font-family: 'Dancing Script', cursive;
+    font-size: clamp(18px, 4vw, 22px);
+    color: #444;
+}
+
+@keyframes beat {
+	0% {
+		width: 50px;
+	}
+	25% {
+		width: 58px;
+	}
+	30% {
+		width: 50px;
+	}
+	50% {
+		width: 45px;
+	}
+	60% {
+		width: 50px;
+	}
+	75% {
+		width: 58px;
+	}
+	100% {
+		width: 50px;
+	}
+}
+
+@keyframes openmsg {
+	0% {
+		height: 0px;
+		padding: 0px 20px;
+	}
+	100% {
+		height: 75%;
+		padding: 20px 20px;
+	}
+}
+
+@keyframes heartMove {
+	0% {
+		top: 50%
+	}
+	100% {
+		top: 85%;
+		transform: translate(-50%, 0);
+	}
+}
+
+.openNor {
+	animation-direction: normal;
+	animation-play-state: running;
+}
+
+.closeNor {
+	animation-direction: reverse;
+	animation-play-state: running;
+}
+
+.no-anim {
+	animation: none;
+}
+
+.closed {
+	height: 0px;
+	padding: 0px 20px;
+}
+
+.bottom {
+	bottom: 5px;
+}
+
+.openHer {
+	animation-name: heartMove;
+	animation-duration: 2s;
+	animation-timing-function: linear;
+	animation-play-state: running;
+	animation-fill-mode: forwards;
+}
+
+.closeHer {
+	animation-name: heartMove;
+	animation-duration: 2s;
+	animation-timing-function: linear;
+	animation-play-state: running;
+	animation-direction: reverse;
+	animation-fill-mode: forwards;
+}
+
+.beating > img {
+	animation-name: beat;
+	animation-duration: 2s;
+	animation-timing-function: ease-in-out;
+	animation-iteration-count: infinite;
+	animation-play-state: running;
+}
+
+.openedHer {
+	top: 85%;
+	transform: translate(-50%, 0);
+}
+
+.buttons {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 15px;
+}
+
+.buttons button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    border: none;
+    border-radius: 20px;
+    font-family: 'Quicksand', sans-serif;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.yes-button {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.no-button {
+    background-color: #f1f1f1;
+    color: #555;
+}
+
+.buttons button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.yes-button:hover {
+     background-color: #c0392b;
+}
+
+.no-button:hover {
+     background-color: #e0e0e0;
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-1000px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.hearts-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: -1;
+}
+
+.heart-shape {
+  position: absolute;
+  bottom: -50px;
+  width: 20px;
+  height: 20px;
+  background-color: rgba(231, 76, 60, 0.5);
+  transform-origin: center;
+  animation: float 10s linear infinite;
+}
+
+.heart-shape::before, 
+.heart-shape::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: inherit;
+  border-radius: 50%;
+}
+
+.heart-shape::before {
+  top: -10px;
+  left: 0;
+}
+
+.heart-shape::after {
+  top: 0;
+  left: 10px;
+}
+
+/* Estilos para nubes flotantes */
+.clouds-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: -2; /* Detrás de los corazones y el contenido */
+}
+
+.cloud {
+  position: absolute;
+  width: 150px; /* Tamaño base de la nube */
+  height: 50px; /* Altura base */
+  background: rgba(255, 255, 255, 0.7); /* Blanco semitransparente */
+  border-radius: 50px; /* Redondear el cuerpo principal */
+  opacity: 0.8;
+  animation: moveClouds 25s linear infinite;
+}
+
+/* Usar pseudo-elementos para las partes redondeadas de la nube */
+.cloud::before, .cloud::after {
+  content: '';
+  position: absolute;
+  background: inherit; /* Heredar color y transparencia */
+  border-radius: 50%;
+  z-index: -1; /* Detrás del cuerpo principal */
+}
+
+.cloud::before {
+  width: 60px; /* Tamaño de la primera "bola" */
+  height: 60px;
+  top: -25px; /* Posición relativa */
+  left: 20px;
+}
+
+.cloud::after {
+  width: 80px; /* Tamaño de la segunda "bola" */
+  height: 80px;
+  top: -40px;
+  right: 25px; 
+}
+
+/* Animación para mover las nubes horizontalmente */
+@keyframes moveClouds {
+  0% {
+    transform: translateX(-200px); /* Empezar fuera a la izquierda */
+  }
+  100% {
+    transform: translateX(100vw); /* Terminar fuera a la derecha */
+  }
+}
